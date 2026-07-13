@@ -41,7 +41,8 @@ export async function GET() {
     return NextResponse.json({ children: children ?? [] });
   } catch (err) {
     console.error("GET /api/children error:", err);
-    return NextResponse.json({ error: "Failed to fetch children" }, { status: 500 });
+    const detail = err instanceof Error ? err.message : JSON.stringify(err);
+    return NextResponse.json({ error: `Failed to fetch children: ${detail}` }, { status: 500 });
   }
 }
 
@@ -93,6 +94,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ child });
   } catch (err) {
     console.error("POST /api/children error:", err);
-    return NextResponse.json({ error: "Failed to create child" }, { status: 500 });
+    const detail = err instanceof Error ? err.message : JSON.stringify(err);
+    return NextResponse.json({ error: `Failed to create child: ${detail}` }, { status: 500 });
   }
 }

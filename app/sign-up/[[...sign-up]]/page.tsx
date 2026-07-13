@@ -4,6 +4,7 @@ import { useState } from "react";
 import { SignUp } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Users, Gamepad2, ArrowLeft, Shield, Star } from "lucide-react";
 
@@ -99,14 +100,14 @@ function RoleSelector({ onSelect }: { onSelect: (r: "parent" | "kid") => void })
               I'm a Kid
             </div>
             <div className="text-xs leading-relaxed" style={{ color: "#6B6894" }}>
-              Enter the join code your parent gave you to start learning
+              Sign in with the name and PIN your parent gave you
             </div>
           </div>
           <div className="w-full flex items-center gap-1.5 rounded-xl px-3 py-2"
             style={{ backgroundColor: "#FFF3CD" }}>
             <Star size={12} style={{ color: "#D97706" }} />
             <span className="text-xs font-semibold" style={{ color: "#D97706" }}>
-              Need a join code
+              Name + PIN required
             </span>
           </div>
         </motion.button>
@@ -123,17 +124,7 @@ function RoleSelector({ onSelect }: { onSelect: (r: "parent" | "kid") => void })
 }
 
 function KidJoinForm() {
-  const [code, setCode] = useState("");
-  const [error, setError] = useState("");
-
-  const handleJoin = () => {
-    if (code.length < 6) {
-      setError("Please enter a valid 6-digit join code");
-      return;
-    }
-    // TODO: validate code against Supabase
-    setError("This feature coming soon. Ask your parent to sign up first!");
-  };
+  const router = useRouter();
 
   return (
     <motion.div
@@ -148,10 +139,10 @@ function KidJoinForm() {
           <Gamepad2 size={36} style={{ color: "#D97706" }} />
         </div>
         <h1 className="text-2xl font-black mb-2" style={{ color: "#1A1744" }}>
-          Enter your join code
+          You don't need to sign up!
         </h1>
         <p className="text-sm" style={{ color: "#6B6894" }}>
-          Ask your parent for the 6-digit code from their dashboard
+          Your parent already created your profile. Ask them for your name and 4-digit PIN, then sign in.
         </p>
       </div>
 
@@ -161,48 +152,20 @@ function KidJoinForm() {
           boxShadow: "0 4px 24px rgba(60,52,137,0.10)",
           border: "1px solid #EDE8FF"
         }}>
-
-        <label className="block text-sm font-semibold mb-2" style={{ color: "#1A1744" }}>
-          Join Code
-        </label>
-        <input
-          type="text"
-          maxLength={6}
-          value={code}
-          onChange={(e) => {
-            setCode(e.target.value.toUpperCase());
-            setError("");
-          }}
-          placeholder="ABC123"
-          className="w-full text-center text-3xl font-black tracking-[0.5em] rounded-2xl px-4 py-4 outline-none transition-all"
-          style={{
-            backgroundColor: "#F0EEFF",
-            border: "2px solid #EDE8FF",
-            color: "#3C3489",
-            letterSpacing: "0.4em",
-          }}
-        />
-
-        {error && (
-          <p className="text-xs mt-2 text-center" style={{ color: "#FF6B6B" }}>
-            {error}
-          </p>
-        )}
-
         <button
-          onClick={handleJoin}
-          className="w-full mt-4 py-3.5 rounded-2xl font-bold text-white transition-all"
+          onClick={() => router.push("/sign-in")}
+          className="w-full py-3.5 rounded-2xl font-bold text-white transition-all"
           style={{ backgroundColor: "#3C3489" }}
         >
-          Join Now
+          Go to sign in
         </button>
 
         <div className="mt-4 rounded-2xl p-4 text-center"
           style={{ backgroundColor: "#F0EEFF" }}>
           <p className="text-xs" style={{ color: "#6B6894" }}>
-            Don't have a code yet?{" "}
+            No profile yet?{" "}
             <span className="font-semibold" style={{ color: "#7F77DD" }}>
-              Ask your parent to sign up at episodeiq.com
+              Ask a parent to sign up and add you first
             </span>
           </p>
         </div>
