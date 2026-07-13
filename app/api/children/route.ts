@@ -7,7 +7,7 @@ async function getOrCreateUser(clerkId: string) {
     .from("users")
     .select("*")
     .eq("clerk_id", clerkId)
-    .single();
+    .maybeSingle();
 
   if (existingError) throw existingError;
   if (existing) return existing;
