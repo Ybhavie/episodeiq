@@ -1,8 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 import Groq from "groq-sdk";
 import { supabaseAdmin } from "@/lib/supabase";
+import { generateSceneImage } from "@/lib/gemini";
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+
+interface Scene {
+  id: number;
+  title: string;
+  visualType: string;
+  narration: string;
+  keyPoints: string[];
+  imageUrl?: string | null;
+}
+
+function buildImagePrompt(scene: Scene, world: string, characterName: string) {
+  return `Flat-vector cartoon illustration for a children's educational app, ages 9-12. No text, letters, numbers, or words anywhere in the image — picture only.
+Style: bright cheerful colors, simple rounded shapes, friendly storybook illustration.
+Setting: ${world}.
+Main character: ${characterName}.
+Depict this moment: ${scene.narration}`;
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -95,6 +113,13 @@ Return ONLY valid JSON in this exact format, no other text:
         { status: 500 }
       );
     }
+
+    // Generate one illustration per scene with Gemini, in parallel
+    const scenes: Scene[] = scriptJson.scenes ?? [];
+    const imageUrls = await Promise.all(
+      scenes.map((scene) => generateSceneImage(buildImagePrompt(scene, world, characterName)))
+    );
+    scriptJson.scenes = scenes.map((scene, i) => ({ ...scene, imageUrl: imageUrls[i] }));
 
     // Save episode to Supabase
     const { data: episode, error: dbError } = await supabaseAdmin

@@ -11,6 +11,8 @@ import {
   Check,
   Trophy,
   Star,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
 import { worldGradients } from "@/lib/worlds";
 
@@ -27,6 +29,7 @@ interface Scene {
   narration: string;
   keyPoints: string[];
   visualType: "intro" | "explanation" | "summary";
+  imageUrl?: string | null;
 }
 
 interface Episode {
@@ -63,6 +66,7 @@ export default function EpisodePlayerPage() {
 
   const [score, setScore] = useState(0);
   const [xpEarned, setXpEarned] = useState(0);
+  const [speechOn, setSpeechOn] = useState(true);
 
   const load = useCallback(async () => {
     try {
@@ -96,6 +100,25 @@ export default function EpisodePlayerPage() {
   const scenes = episode?.scenes ?? [];
   const currentScene = scenes[sceneIndex];
   const isLastScene = sceneIndex === scenes.length - 1;
+
+  const speak = useCallback((text: string) => {
+    if (typeof window === "undefined" || !window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 0.95;
+    utterance.pitch = 1.05;
+    window.speechSynthesis.speak(utterance);
+  }, []);
+
+  useEffect(() => {
+    if (phase !== "story" || !currentScene) return;
+    if (speechOn) speak(currentScene.narration);
+    return () => window.speechSynthesis?.cancel();
+  }, [phase, sceneIndex, currentScene, speechOn, speak]);
+
+  useEffect(() => {
+    return () => window.speechSynthesis?.cancel();
+  }, []);
 
   const startQuiz = async () => {
     setPhase("quiz-loading");
@@ -204,10 +227,23 @@ export default function EpisodePlayerPage() {
             style={{ backgroundColor: "rgba(255,255,255,0.15)" }}>
             <ArrowLeft size={16} className="text-white" />
           </button>
-          <span className="text-xs font-bold text-white opacity-80">
+          <span className="text-xs font-bold text-white opacity-80 truncate px-2">
             {episode?.title}
           </span>
-          <div className="w-8" />
+          {phase === "story" ? (
+            <button
+              onClick={() => setSpeechOn((v) => !v)}
+              className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
+              style={{ backgroundColor: "rgba(255,255,255,0.15)" }}>
+              {speechOn ? (
+                <Volume2 size={16} className="text-white" />
+              ) : (
+                <VolumeX size={16} className="text-white" />
+              )}
+            </button>
+          ) : (
+            <div className="w-8 flex-shrink-0" />
+          )}
         </div>
 
         {/* Progress bar */}
@@ -253,13 +289,37 @@ export default function EpisodePlayerPage() {
             >
               <div className="rounded-3xl p-6 mb-5"
                 style={{ backgroundColor: "white", border: "1px solid #EDE8FF", boxShadow: "0 4px 24px rgba(60,52,137,0.08)" }}>
-                <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 mb-4"
-                  style={{ backgroundColor: "#F0EEFF" }}>
-                  <Sparkles size={12} style={{ color: "#7F77DD" }} />
-                  <span className="text-xs font-bold" style={{ color: "#7F77DD" }}>
-                    Scene {sceneIndex + 1} of {scenes.length}
-                  </span>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="inline-flex items-center gap-2 rounded-full px-3 py-1"
+                    style={{ backgroundColor: "#F0EEFF" }}>
+                    <Sparkles size={12} style={{ color: "#7F77DD" }} />
+                    <span className="text-xs font-bold" style={{ color: "#7F77DD" }}>
+                      Scene {sceneIndex + 1} of {scenes.length}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => speak(currentScene.narration)}
+                    className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
+                    style={{ backgroundColor: "#F0EEFF" }}>
+                    <Volume2 size={14} style={{ color: "#7F77DD" }} />
+                  </button>
                 </div>
+
+                {currentScene.imageUrl && (
+                  <div className="rounded-2xl overflow-hidden mb-4"
+                    style={{ aspectRatio: "4 / 3", backgroundColor: "#F0EEFF" }}>
+                    <motion.img
+                      key={currentScene.imageUrl}
+                      src={currentScene.imageUrl}
+                      alt={currentScene.title}
+                      className="w-full h-full object-cover"
+                      initial={{ scale: 1.08 }}
+                      animate={{ scale: 1 }}
+                      transition={{ duration: 8, ease: "easeOut" }}
+                    />
+                  </div>
+                )}
+
                 <h2 className="text-xl font-black mb-3" style={{ color: "#1A1744" }}>
                   {currentScene.title}
                 </h2>
