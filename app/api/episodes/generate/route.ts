@@ -34,6 +34,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const languageInstruction =
+      !language || language === "English"
+        ? "Write the entire episode in simple, clear English."
+        : `Write the entire episode — the title, every scene title, every narration, and every key point — in ${language}, using the native ${language} script (not English, and not transliterated). Keep the vocabulary simple enough for a fluent 9-12 year old ${language} speaker to understand. Only proper nouns without a natural ${language} equivalent may stay in English.`;
+
     // Build the Groq prompt
     const prompt = `You are an expert children's education content creator.
 
@@ -42,8 +47,9 @@ Create a personalised learning episode for a child with these details:
 - Their character: ${characterName}
 - Story world: ${world}
 - Topic to teach: ${topic}
-- Language style: ${language} (write in simple English but reference ${language} cultural context if relevant)
 - Age group: 9-12 years old
+
+Language requirement: ${languageInstruction}
 
 Generate a structured 3-scene episode as JSON. The episode must:
 1. Be set entirely in the ${world} universe
@@ -51,6 +57,7 @@ Generate a structured 3-scene episode as JSON. The episode must:
 3. Teach the topic "${topic}" accurately and clearly
 4. Use simple language a 10-year-old can understand
 5. Be engaging, fun, and educational
+6. Follow the language requirement above for every piece of text in the JSON
 
 Return ONLY valid JSON in this exact format, no other text:
 {
@@ -120,6 +127,7 @@ Return ONLY valid JSON in this exact format, no other text:
       scenes.map((scene) => generateSceneImage(buildImagePrompt(scene, world, characterName)))
     );
     scriptJson.scenes = scenes.map((scene, i) => ({ ...scene, imageUrl: imageUrls[i] }));
+    scriptJson.language = language ?? "English";
 
     // Save episode to Supabase
     const { data: episode, error: dbError } = await supabaseAdmin

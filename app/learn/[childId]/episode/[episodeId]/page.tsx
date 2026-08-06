@@ -15,13 +15,24 @@ import {
   VolumeX,
 } from "lucide-react";
 import { worldGradients } from "@/lib/worlds";
+import { WorldCharacter } from "@/components/WorldCharacter";
 
 interface Child {
   id: string;
   name: string;
   world: string;
   character_name: string;
+  language?: string;
 }
+
+const speechLangMap: Record<string, string> = {
+  English: "en-IN",
+  Hindi: "hi-IN",
+  Tamil: "ta-IN",
+  Marathi: "mr-IN",
+  // Most browsers ship no Konkani voice; Hindi is the closest widely-available fallback.
+  Konkani: "hi-IN",
+};
 
 interface Scene {
   id: number;
@@ -105,10 +116,11 @@ export default function EpisodePlayerPage() {
     if (typeof window === "undefined" || !window.speechSynthesis) return;
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = speechLangMap[child?.language ?? "English"] ?? "en-IN";
     utterance.rate = 0.95;
     utterance.pitch = 1.05;
     window.speechSynthesis.speak(utterance);
-  }, []);
+  }, [child]);
 
   useEffect(() => {
     if (phase !== "story" || !currentScene) return;
@@ -305,7 +317,7 @@ export default function EpisodePlayerPage() {
                   </button>
                 </div>
 
-                {currentScene.imageUrl && (
+                {currentScene.imageUrl ? (
                   <div className="rounded-2xl overflow-hidden mb-4"
                     style={{ aspectRatio: "4 / 3", backgroundColor: "#F0EEFF" }}>
                     <motion.img
@@ -317,6 +329,33 @@ export default function EpisodePlayerPage() {
                       animate={{ scale: 1 }}
                       transition={{ duration: 8, ease: "easeOut" }}
                     />
+                  </div>
+                ) : (
+                  <div className="rounded-2xl overflow-hidden mb-4 relative flex items-center justify-center"
+                    style={{ aspectRatio: "4 / 3", background: gradient }}>
+                    {[...Array(6)].map((_, i) => (
+                      <motion.div
+                        key={i}
+                        className="absolute rounded-full"
+                        style={{
+                          width: `${4 + (i % 3) * 3}px`,
+                          height: `${4 + (i % 3) * 3}px`,
+                          backgroundColor: "rgba(255,255,255,0.4)",
+                          top: `${15 + i * 12}%`,
+                          left: `${8 + i * 15}%`,
+                        }}
+                        animate={{ y: [0, -10, 0], opacity: [0.3, 0.8, 0.3] }}
+                        transition={{ duration: 2.5 + i * 0.3, repeat: Infinity, delay: i * 0.25 }}
+                      />
+                    ))}
+                    <motion.div
+                      key={`${sceneIndex}-character`}
+                      animate={{ y: [0, -12, 0], rotate: [-3, 3, -3] }}
+                      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                      className="relative z-10"
+                    >
+                      <WorldCharacter world={child?.world ?? "Wizard Academy"} size={110} />
+                    </motion.div>
                   </div>
                 )}
 

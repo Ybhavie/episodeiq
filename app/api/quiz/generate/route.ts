@@ -25,10 +25,18 @@ export async function POST(req: NextRequest) {
       .map((s: { narration: string }) => s.narration)
       .join("\n");
 
+    const language: string = episode.script_json?.language ?? "English";
+    const languageInstruction =
+      language === "English"
+        ? "Write the questions and options in simple, clear English."
+        : `Write the questions and all answer options in ${language}, using the native ${language} script (not English, not transliterated). Only proper nouns without a natural ${language} equivalent may stay in English.`;
+
     const prompt = `Based on this children's lesson script about "${episode.topic}", write exactly 3 multiple-choice quiz questions for a 9-12 year old.
 
 Lesson script:
 ${narration}
+
+Language requirement: ${languageInstruction}
 
 Return ONLY valid JSON, no other text, in this exact format:
 {
