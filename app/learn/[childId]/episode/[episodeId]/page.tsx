@@ -318,25 +318,41 @@ export default function EpisodePlayerPage() {
 
                 <div className="rounded-2xl overflow-hidden mb-4 relative flex items-center justify-center"
                   style={{ aspectRatio: "4 / 3", background: gradient }}>
-                  {[...Array(6)].map((_, i) => (
-                    <motion.div
-                      key={i}
-                      className="absolute rounded-full"
-                      style={{
-                        width: `${4 + (i % 3) * 3}px`,
-                        height: `${4 + (i % 3) * 3}px`,
-                        backgroundColor: "rgba(255,255,255,0.4)",
-                        top: `${15 + i * 12}%`,
-                        left: `${8 + i * 15}%`,
-                      }}
-                      animate={{ y: [0, -10, 0], opacity: [0.3, 0.8, 0.3] }}
-                      transition={{ duration: 2.5 + i * 0.3, repeat: Infinity, delay: i * 0.25 }}
-                    />
-                  ))}
+                  {/* ambient particles driven by scene.animation (fallback to defaults) */}
+                  {(() => {
+                    const particleCount = currentScene?.animation?.particles?.count ?? 6;
+                    const sizeRange = currentScene?.animation?.particles?.sizeRange ?? [4, 8];
+                    const particleDuration = currentScene?.animation?.particles?.duration ?? 2.5;
+                    return Array.from({ length: particleCount }).map((_, i) => {
+                      const size = Math.round(sizeRange[0] + ((i % 3) * (sizeRange[1] - sizeRange[0])) / 2);
+                      const top = 15 + i * 12;
+                      const left = 8 + i * 15;
+                      return (
+                        <motion.div
+                          key={i}
+                          className="absolute rounded-full"
+                          style={{
+                            width: `${size}px`,
+                            height: `${size}px`,
+                            backgroundColor: "rgba(255,255,255,0.4)",
+                            top: `${top}%`,
+                            left: `${left}%`,
+                          }}
+                          animate={{ y: [0, -10, 0], opacity: [0.3, 0.8, 0.3] }}
+                          transition={{ duration: particleDuration + i * 0.2, repeat: Infinity, delay: i * 0.15 }}
+                        />
+                      );
+                    });
+                  })()}
+
+                  {/* character motion driven by animation metadata */}
                   <motion.div
                     key={`${sceneIndex}-character`}
-                    animate={{ y: [0, -12, 0], rotate: [-3, 3, -3] }}
-                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                    animate={{
+                      y: [0, -(currentScene?.animation?.character?.bobAmplitude ?? 12), 0],
+                      rotate: [-(currentScene?.animation?.character?.rotateDegrees ?? 3), (currentScene?.animation?.character?.rotateDegrees ?? 3), -(currentScene?.animation?.character?.rotateDegrees ?? 3)]
+                    }}
+                    transition={{ duration: currentScene?.animation?.character?.duration ?? 3, repeat: Infinity, ease: "easeInOut" }}
                     className="relative z-10"
                   >
                     <WorldCharacter world={child?.world ?? "Wizard Academy"} size={110} />

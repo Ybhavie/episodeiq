@@ -22,6 +22,8 @@ export async function POST(req: NextRequest) {
         : `Write the entire episode — the title, every scene title, every narration, and every key point — in ${language}, using the native ${language} script (not English, and not transliterated). Keep the vocabulary simple enough for a fluent 9-12 year old ${language} speaker to understand. Only proper nouns without a natural ${language} equivalent may stay in English.`;
 
     // Build the Groq prompt
+    // Request simple per-scene animation metadata so the player can start real motion
+    // automatically when a scene is rendered. Keep values modest and loop-friendly.
     const prompt = `You are an expert children's education content creator.
 
 Create a personalised learning episode for a child with these details:
@@ -41,6 +43,12 @@ Generate a structured 3-scene episode as JSON. The episode must:
 5. Be engaging, fun, and educational
 6. Follow the language requirement above for every piece of text in the JSON
 
+Additionally, for each scene include an `animation` object with these fields:
+- `character`: { "bobAmplitude": number (px), "duration": number (s), "rotateDegrees": number }
+- `particles`: { "count": integer, "sizeRange": [minPx, maxPx], "duration": number (s) }
+
+These animation values should be modest (bobAmplitude ~ 6-16, rotateDegrees ~ 2-6, particles count ~ 4-10).
+
 Return ONLY valid JSON in this exact format, no other text:
 {
   "title": "Episode title (creative, world-themed)",
@@ -51,21 +59,24 @@ Return ONLY valid JSON in this exact format, no other text:
       "title": "Scene 1 title",
       "visualType": "intro",
       "narration": "2-3 sentences of narration. ${characterName} discovers the problem/question in the ${world} setting. Make it exciting and hook the child.",
-      "keyPoints": ["One key fact", "Another key fact"]
+      "keyPoints": ["One key fact", "Another key fact"],
+      "animation": { "character": { "bobAmplitude": 12, "duration": 3, "rotateDegrees": 3 }, "particles": { "count": 6, "sizeRange": [4,8], "duration": 2.5 } }
     },
     {
       "id": 2,
       "title": "Scene 2 title",
       "visualType": "explanation",
       "narration": "3-4 sentences explaining the main concept clearly. Use an analogy from the ${world} world. Break it down simply.",
-      "keyPoints": ["Key concept 1", "Key concept 2", "Key concept 3"]
+      "keyPoints": ["Key concept 1", "Key concept 2", "Key concept 3"],
+      "animation": { "character": { "bobAmplitude": 10, "duration": 3, "rotateDegrees": 4 }, "particles": { "count": 8, "sizeRange": [4,10], "duration": 3 } }
     },
     {
       "id": 3,
       "title": "Scene 3 title",
       "visualType": "summary",
       "narration": "2-3 sentences summarising what was learned. ${characterName} celebrates understanding. Preview the quiz.",
-      "keyPoints": ["Summary point 1", "Summary point 2", "Summary point 3"]
+      "keyPoints": ["Summary point 1", "Summary point 2", "Summary point 3"],
+      "animation": { "character": { "bobAmplitude": 8, "duration": 2.8, "rotateDegrees": 2 }, "particles": { "count": 5, "sizeRange": [4,7], "duration": 2.2 } }
     }
   ]
 }`;
