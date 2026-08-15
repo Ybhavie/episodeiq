@@ -4,6 +4,17 @@ import { supabaseAdmin } from "@/lib/supabase";
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
+// Curated list of icon names the model may pick from — must match the map in
+// app/learn/[childId]/episode/[episodeId]/page.tsx exactly.
+const ICON_NAMES = [
+  "Flame", "Mountain", "Droplets", "Leaf", "Sun", "Moon", "Star", "Cloud", "CloudRain",
+  "Wind", "Snowflake", "Rainbow", "TreePine", "Sprout", "Bug", "Fish", "Bird", "PawPrint",
+  "Waves", "Zap", "Magnet", "Atom", "FlaskConical", "Thermometer", "Gauge", "Orbit",
+  "Rocket", "Telescope", "Microscope", "Dna", "Battery", "Lightbulb", "Heart", "Brain",
+  "Bone", "Eye", "Ear", "Apple", "Calculator", "Ruler", "Scale", "Globe", "Compass",
+  "Map", "Clock", "Car", "Plane", "Umbrella", "Coffee", "BookOpen", "Sparkles",
+].join(", ");
+
 export async function POST(req: NextRequest) {
   try {
     const { topic, childId, world, characterName, language, childName } =
@@ -38,6 +49,7 @@ Generate a structured 3-scene episode as JSON. The episode must:
 4. Use simple, confident language a 10-year-old can understand — like a great textbook, not a bedtime story
 5. Be engaging and precise, never vague or whimsical
 6. Follow the language requirement above for every piece of text in the JSON
+7. For each scene, pick the single ICON from this exact list that most concretely pictures that scene's specific content (not a generic placeholder — pick the one that actually depicts the thing being discussed): ${ICON_NAMES}
 
 Return ONLY valid JSON in this exact format, no other text:
 {
@@ -49,21 +61,24 @@ Return ONLY valid JSON in this exact format, no other text:
       "title": "Scene 1 title — the hook question",
       "visualType": "intro",
       "narration": "2-3 sentences. Ask the hook question directly. Make the child genuinely curious about the real answer.",
-      "keyPoints": ["One key fact", "Another key fact"]
+      "keyPoints": ["One key fact", "Another key fact"],
+      "icon": "IconNameFromTheList"
     },
     {
       "id": 2,
       "title": "Scene 2 title — the explanation",
       "visualType": "explanation",
       "narration": "3-4 sentences giving the real, accurate explanation step by step, using a simple everyday comparison.",
-      "keyPoints": ["Key concept 1", "Key concept 2", "Key concept 3"]
+      "keyPoints": ["Key concept 1", "Key concept 2", "Key concept 3"],
+      "icon": "IconNameFromTheList"
     },
     {
       "id": 3,
       "title": "Scene 3 title — the recap",
       "visualType": "summary",
       "narration": "2-3 sentences summarising the facts learned, in plain direct language. Preview the quiz.",
-      "keyPoints": ["Summary point 1", "Summary point 2", "Summary point 3"]
+      "keyPoints": ["Summary point 1", "Summary point 2", "Summary point 3"],
+      "icon": "IconNameFromTheList"
     }
   ]
 }`;

@@ -16,6 +16,13 @@ import {
   HelpCircle,
   Lightbulb,
   CheckCircle2,
+  Flame, Mountain, Droplets, Leaf, Sun, Moon, Cloud, CloudRain,
+  Wind, Snowflake, Rainbow, TreePine, Sprout, Bug, Fish, Bird, PawPrint,
+  Waves, Zap, Magnet, Atom, FlaskConical, Thermometer, Gauge, Orbit,
+  Rocket, Telescope, Microscope, Dna, Battery, Heart, Brain,
+  Bone, Eye, Ear, Apple, Calculator, Ruler, Scale, Globe, Compass,
+  Map, Clock, Car, Plane, Umbrella, Coffee, BookOpen,
+  type LucideIcon,
 } from "lucide-react";
 import { worldGradients } from "@/lib/worlds";
 
@@ -24,6 +31,16 @@ const visualTypeIcons = {
   explanation: Lightbulb,
   summary: CheckCircle2,
 } as const;
+
+// Must match the ICON_NAMES list in app/api/episodes/generate/route.ts
+const sceneIconMap: Record<string, LucideIcon> = {
+  Flame, Mountain, Droplets, Leaf, Sun, Moon, Star, Cloud, CloudRain,
+  Wind, Snowflake, Rainbow, TreePine, Sprout, Bug, Fish, Bird, PawPrint,
+  Waves, Zap, Magnet, Atom, FlaskConical, Thermometer, Gauge, Orbit,
+  Rocket, Telescope, Microscope, Dna, Battery, Lightbulb, Heart, Brain,
+  Bone, Eye, Ear, Apple, Calculator, Ruler, Scale, Globe, Compass,
+  Map, Clock, Car, Plane, Umbrella, Coffee, BookOpen, Sparkles,
+};
 
 interface Child {
   id: string;
@@ -48,6 +65,7 @@ interface Scene {
   narration: string;
   keyPoints: string[];
   visualType: "intro" | "explanation" | "summary";
+  icon?: string;
 }
 
 interface Episode {
@@ -329,7 +347,10 @@ export default function EpisodePlayerPage() {
                   <div className="w-20 h-20 rounded-3xl flex items-center justify-center"
                     style={{ backgroundColor: "rgba(255,255,255,0.15)" }}>
                     {(() => {
-                      const Icon = visualTypeIcons[currentScene.visualType] ?? Lightbulb;
+                      const Icon =
+                        (currentScene.icon && sceneIconMap[currentScene.icon]) ||
+                        visualTypeIcons[currentScene.visualType] ||
+                        Lightbulb;
                       return <Icon size={40} className="text-white" />;
                     })()}
                   </div>
