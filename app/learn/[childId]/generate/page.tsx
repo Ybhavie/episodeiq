@@ -12,6 +12,8 @@ interface Child {
   world: string;
   character_name: string;
   language: string;
+  board?: string;
+  grade?: string;
 }
 
 interface GeneratedEpisode {
@@ -221,6 +223,8 @@ export default function GeneratePage() {
           characterName: childData.character_name,
           language: childData.language,
           childName: childData.name,
+          board: childData.board,
+          grade: childData.grade,
         }),
       });
 

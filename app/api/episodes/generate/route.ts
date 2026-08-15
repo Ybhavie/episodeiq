@@ -17,7 +17,7 @@ const ICON_NAMES = [
 
 export async function POST(req: NextRequest) {
   try {
-    const { topic, childId, world, characterName, language, childName } =
+    const { topic, childId, world, characterName, language, childName, board, grade } =
       await req.json();
 
     if (!topic || !childId || !world || !characterName) {
@@ -32,6 +32,11 @@ export async function POST(req: NextRequest) {
         ? "Write the entire episode in simple, clear English."
         : `Write the entire episode — the title, every scene title, every narration, and every key point — in ${language}, using the native ${language} script (not English, and not transliterated). Keep the vocabulary simple enough for a fluent 9-12 year old ${language} speaker to understand. Only proper nouns without a natural ${language} equivalent may stay in English.`;
 
+    const curriculumInstruction =
+      board && grade
+        ? `This child studies under the ${board} curriculum in ${grade} grade. Match the depth, scope, and vocabulary to how a ${board} ${grade} grade textbook would actually introduce this topic — not simpler, not more advanced. Use the terminology that curriculum uses at that level.`
+        : `Match the depth and vocabulary a typical Indian school textbook uses for this age group.`;
+
     // Build the Groq prompt — a direct explainer, not an in-world roleplay story.
     const prompt = `You are an expert children's education content creator, writing like the best teacher a kid ever had — direct, clear, and genuinely interesting.
 
@@ -39,6 +44,8 @@ Create a learning episode that teaches this topic to a child:
 - Child's name: ${childName}
 - Topic to teach: ${topic}
 - Age group: 9-12 years old
+
+Curriculum requirement: ${curriculumInstruction}
 
 Language requirement: ${languageInstruction}
 
@@ -48,8 +55,9 @@ Generate a structured 3-scene episode as JSON. The episode must:
 3. Explain the actual mechanism/reason step by step in scene 2, using a simple everyday comparison a 9-12 year old already understands (kettles, balloons, sponges, traffic — not made-up magic)
 4. Use simple, confident language a 10-year-old can understand — like a great textbook, not a bedtime story
 5. Be engaging and precise, never vague or whimsical
-6. Follow the language requirement above for every piece of text in the JSON
-7. For each scene, pick the single ICON from this exact list that most concretely pictures that scene's specific content (not a generic placeholder — pick the one that actually depicts the thing being discussed): ${ICON_NAMES}
+6. Follow the curriculum requirement above for depth and vocabulary
+7. Follow the language requirement above for every piece of text in the JSON
+8. For each scene, pick the single ICON from this exact list that most concretely pictures that scene's specific content (not a generic placeholder — pick the one that actually depicts the thing being discussed): ${ICON_NAMES}
 
 Return ONLY valid JSON in this exact format, no other text:
 {
