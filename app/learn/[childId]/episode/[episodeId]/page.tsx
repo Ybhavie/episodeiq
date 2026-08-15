@@ -40,6 +40,10 @@ interface Scene {
   narration: string;
   keyPoints: string[];
   visualType: "intro" | "explanation" | "summary";
+  animation?: {
+    character?: { bobAmplitude?: number; duration?: number; rotateDegrees?: number };
+    particles?: { count?: number; sizeRange?: [number, number]; duration?: number };
+  };
 }
 
 interface Episode {

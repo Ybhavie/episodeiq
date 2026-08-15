@@ -43,9 +43,9 @@ Generate a structured 3-scene episode as JSON. The episode must:
 5. Be engaging, fun, and educational
 6. Follow the language requirement above for every piece of text in the JSON
 
-Additionally, for each scene include an `animation` object with these fields:
-- `character`: { "bobAmplitude": number (px), "duration": number (s), "rotateDegrees": number }
-- `particles`: { "count": integer, "sizeRange": [minPx, maxPx], "duration": number (s) }
+Additionally, for each scene include an "animation" object with these fields:
+- "character": { "bobAmplitude": number (px), "duration": number (s), "rotateDegrees": number }
+- "particles": { "count": integer, "sizeRange": [minPx, maxPx], "duration": number (s) }
 
 These animation values should be modest (bobAmplitude ~ 6-16, rotateDegrees ~ 2-6, particles count ~ 4-10).
 
