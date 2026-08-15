@@ -217,9 +217,9 @@ export default function Hero() {
               style={{ color: "#1A1744" }}>
               Every confused kid
               <br />
-              <span className="text-gradient">deserves their</span>
+              <span className="text-gradient">deserves a</span>
               <br />
-              <span className="text-gradient">own episode</span>
+              <span className="text-gradient">real answer</span>
             </h1>
           </motion.div>
 
@@ -229,9 +229,9 @@ export default function Hero() {
             style={{ color: "#6B6894" }}>
             EpisodeIQ turns any question into a{" "}
             <span className="font-semibold" style={{ color: "#3C3489" }}>
-              personalised animated video lesson
+              clear, real explanation
             </span>
-            {" "}— set in your child's own story universe, narrated by their character, ready in seconds.
+            {" "}— with visuals, key facts, and a quiz to lock it in, ready in seconds.
           </motion.p>
 
           {/* CTAs */}
@@ -299,37 +299,21 @@ export default function Hero() {
               <div className="rounded-2xl p-6 sm:p-10 text-white relative overflow-hidden min-h-[200px] flex flex-col items-center justify-center gap-4"
                 style={{ background: "linear-gradient(135deg, #3C3489 0%, #4A3FA0 100%)" }}>
 
-                {/* Animated wizard character */}
-                <motion.div
-                  animate={{ y: [0, -8, 0] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                >
-                  <svg width="64" height="64" viewBox="0 0 48 48" fill="none">
-                    <polygon points="24,4 16,20 32,20" fill="#7F77DD"/>
-                    <rect x="13" y="20" width="22" height="4" rx="2" fill="#A89FE8"/>
-                    <polygon points="24,8 25,11 28,11 25.5,13 26.5,16 24,14.5 21.5,16 22.5,13 20,11 23,11" fill="#FFD93D"/>
-                    <circle cx="24" cy="30" r="9" fill="#FBBF8C"/>
-                    <circle cx="21" cy="29" r="1.8" fill="#1A1744"/>
-                    <circle cx="27" cy="29" r="1.8" fill="#1A1744"/>
-                    <circle cx="21.6" cy="28.4" r="0.6" fill="white"/>
-                    <circle cx="27.6" cy="28.4" r="0.6" fill="white"/>
-                    <path d="M21 33 Q24 36 27 33" stroke="#1A1744" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
-                    <path d="M15 38 Q15 46 24 47 Q33 46 33 38 L29 36 L24 38 L19 36 Z" fill="#7F77DD"/>
-                    <line x1="34" y1="24" x2="44" y2="34" stroke="#A89FE8" strokeWidth="2.5" strokeLinecap="round"/>
-                    <circle cx="34" cy="24" r="2.5" fill="#FFD93D"/>
-                  </svg>
-                </motion.div>
+                <div className="w-16 h-16 rounded-3xl flex items-center justify-center"
+                  style={{ backgroundColor: "rgba(255,255,255,0.15)" }}>
+                  <Sparkles size={30} className="text-white" />
+                </div>
 
                 <div className="text-center">
                   <div className="text-xs font-semibold mb-1 uppercase tracking-widest"
                     style={{ color: "#A89FE8" }}>
-                    Wizard Academy · Science
+                    Science
                   </div>
                   <h3 className="text-xl sm:text-2xl font-bold mb-2">
                     Why does the Moon have craters?
                   </h3>
                   <p className="text-sm max-w-md" style={{ color: "rgba(255,255,255,0.7)" }}>
-                    "Arjun! The ancient scrolls speak of rocks from space — called meteorites — that crashed into the Moon billions of years ago..."
+                    Rocks from space called meteorites crashed into the Moon billions of years ago — and with no wind or rain to wear them away, those craters are still there today.
                   </p>
                 </div>
 

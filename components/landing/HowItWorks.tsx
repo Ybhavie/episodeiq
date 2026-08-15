@@ -16,8 +16,8 @@ const steps = [
   },
   {
     icon: Wand2,
-    title: "AI builds their episode",
-    description: "Our AI writes a full script set in their chosen world — Wizard Academy, Space Station, or Jungle Explorer — with their own character as the hero.",
+    title: "AI writes a real explanation",
+    description: "Our AI builds a clear, accurate lesson on exactly what they asked — the real reason why, step by step, in language a 10-year-old actually understands.",
     color: "#FFF8DC",
     iconColor: "#D4A017",
     number: "02",
@@ -26,8 +26,8 @@ const steps = [
   },
   {
     icon: PlayCircle,
-    title: "Watch the animated lesson",
-    description: "A personalised animated video plays instantly — narrated in their language, with diagrams that build themselves and characters that explain everything.",
+    title: "Read, listen, and understand",
+    description: "The lesson plays instantly with clear visuals and key facts — narrated aloud in their own language, so it works even before they're a confident reader.",
     color: "#E0FAF4",
     iconColor: "#1D9E75",
     number: "03",

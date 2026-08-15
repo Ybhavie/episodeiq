@@ -13,9 +13,17 @@ import {
   Star,
   Volume2,
   VolumeX,
+  HelpCircle,
+  Lightbulb,
+  CheckCircle2,
 } from "lucide-react";
 import { worldGradients } from "@/lib/worlds";
-import { WorldCharacter } from "@/components/WorldCharacter";
+
+const visualTypeIcons = {
+  intro: HelpCircle,
+  explanation: Lightbulb,
+  summary: CheckCircle2,
+} as const;
 
 interface Child {
   id: string;
@@ -40,10 +48,6 @@ interface Scene {
   narration: string;
   keyPoints: string[];
   visualType: "intro" | "explanation" | "summary";
-  animation?: {
-    character?: { bobAmplitude?: number; duration?: number; rotateDegrees?: number };
-    particles?: { count?: number; sizeRange?: [number, number]; duration?: number };
-  };
 }
 
 interface Episode {
@@ -320,47 +324,15 @@ export default function EpisodePlayerPage() {
                   </button>
                 </div>
 
-                <div className="rounded-2xl overflow-hidden mb-4 relative flex items-center justify-center"
+                <div className="rounded-2xl mb-4 flex items-center justify-center"
                   style={{ aspectRatio: "4 / 3", background: gradient }}>
-                  {/* ambient particles driven by scene.animation (fallback to defaults) */}
-                  {(() => {
-                    const particleCount = currentScene?.animation?.particles?.count ?? 6;
-                    const sizeRange = currentScene?.animation?.particles?.sizeRange ?? [4, 8];
-                    const particleDuration = currentScene?.animation?.particles?.duration ?? 2.5;
-                    return Array.from({ length: particleCount }).map((_, i) => {
-                      const size = Math.round(sizeRange[0] + ((i % 3) * (sizeRange[1] - sizeRange[0])) / 2);
-                      const top = 15 + i * 12;
-                      const left = 8 + i * 15;
-                      return (
-                        <motion.div
-                          key={i}
-                          className="absolute rounded-full"
-                          style={{
-                            width: `${size}px`,
-                            height: `${size}px`,
-                            backgroundColor: "rgba(255,255,255,0.4)",
-                            top: `${top}%`,
-                            left: `${left}%`,
-                          }}
-                          animate={{ y: [0, -10, 0], opacity: [0.3, 0.8, 0.3] }}
-                          transition={{ duration: particleDuration + i * 0.2, repeat: Infinity, delay: i * 0.15 }}
-                        />
-                      );
-                    });
-                  })()}
-
-                  {/* character motion driven by animation metadata */}
-                  <motion.div
-                    key={`${sceneIndex}-character`}
-                    animate={{
-                      y: [0, -(currentScene?.animation?.character?.bobAmplitude ?? 12), 0],
-                      rotate: [-(currentScene?.animation?.character?.rotateDegrees ?? 3), (currentScene?.animation?.character?.rotateDegrees ?? 3), -(currentScene?.animation?.character?.rotateDegrees ?? 3)]
-                    }}
-                    transition={{ duration: currentScene?.animation?.character?.duration ?? 3, repeat: Infinity, ease: "easeInOut" }}
-                    className="relative z-10"
-                  >
-                    <WorldCharacter world={child?.world ?? "Wizard Academy"} size={110} />
-                  </motion.div>
+                  <div className="w-20 h-20 rounded-3xl flex items-center justify-center"
+                    style={{ backgroundColor: "rgba(255,255,255,0.15)" }}>
+                    {(() => {
+                      const Icon = visualTypeIcons[currentScene.visualType] ?? Lightbulb;
+                      return <Icon size={40} className="text-white" />;
+                    })()}
+                  </div>
                 </div>
 
                 <h2 className="text-xl font-black mb-3" style={{ color: "#1A1744" }}>

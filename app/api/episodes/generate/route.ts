@@ -21,62 +21,49 @@ export async function POST(req: NextRequest) {
         ? "Write the entire episode in simple, clear English."
         : `Write the entire episode — the title, every scene title, every narration, and every key point — in ${language}, using the native ${language} script (not English, and not transliterated). Keep the vocabulary simple enough for a fluent 9-12 year old ${language} speaker to understand. Only proper nouns without a natural ${language} equivalent may stay in English.`;
 
-    // Build the Groq prompt
-    // Request simple per-scene animation metadata so the player can start real motion
-    // automatically when a scene is rendered. Keep values modest and loop-friendly.
-    const prompt = `You are an expert children's education content creator.
+    // Build the Groq prompt — a direct explainer, not an in-world roleplay story.
+    const prompt = `You are an expert children's education content creator, writing like the best teacher a kid ever had — direct, clear, and genuinely interesting.
 
-Create a personalised learning episode for a child with these details:
+Create a learning episode that teaches this topic to a child:
 - Child's name: ${childName}
-- Their character: ${characterName}
-- Story world: ${world}
 - Topic to teach: ${topic}
 - Age group: 9-12 years old
 
 Language requirement: ${languageInstruction}
 
 Generate a structured 3-scene episode as JSON. The episode must:
-1. Be set entirely in the ${world} universe
-2. Feature ${characterName} as the main character
-3. Teach the topic "${topic}" accurately and clearly
-4. Use simple language a 10-year-old can understand
-5. Be engaging, fun, and educational
+1. Teach the topic "${topic}" accurately, clearly, and directly — real facts, real explanations, no fictional story or roleplay
+2. Open with a hook question that makes the child curious (e.g. "Have you ever wondered why volcanoes erupt? Here's what's really happening.") — do NOT invent a fictional character or fantasy world discovering the topic
+3. Explain the actual mechanism/reason step by step in scene 2, using a simple everyday comparison a 9-12 year old already understands (kettles, balloons, sponges, traffic — not made-up magic)
+4. Use simple, confident language a 10-year-old can understand — like a great textbook, not a bedtime story
+5. Be engaging and precise, never vague or whimsical
 6. Follow the language requirement above for every piece of text in the JSON
-
-Additionally, for each scene include an "animation" object with these fields:
-- "character": { "bobAmplitude": number (px), "duration": number (s), "rotateDegrees": number }
-- "particles": { "count": integer, "sizeRange": [minPx, maxPx], "duration": number (s) }
-
-These animation values should be modest (bobAmplitude ~ 6-16, rotateDegrees ~ 2-6, particles count ~ 4-10).
 
 Return ONLY valid JSON in this exact format, no other text:
 {
-  "title": "Episode title (creative, world-themed)",
+  "title": "Direct, curiosity-driven title stating or asking about the topic (e.g. 'Why Do Volcanoes Erupt?')",
   "topic": "${topic}",
   "scenes": [
     {
       "id": 1,
-      "title": "Scene 1 title",
+      "title": "Scene 1 title — the hook question",
       "visualType": "intro",
-      "narration": "2-3 sentences of narration. ${characterName} discovers the problem/question in the ${world} setting. Make it exciting and hook the child.",
-      "keyPoints": ["One key fact", "Another key fact"],
-      "animation": { "character": { "bobAmplitude": 12, "duration": 3, "rotateDegrees": 3 }, "particles": { "count": 6, "sizeRange": [4,8], "duration": 2.5 } }
+      "narration": "2-3 sentences. Ask the hook question directly. Make the child genuinely curious about the real answer.",
+      "keyPoints": ["One key fact", "Another key fact"]
     },
     {
       "id": 2,
-      "title": "Scene 2 title",
+      "title": "Scene 2 title — the explanation",
       "visualType": "explanation",
-      "narration": "3-4 sentences explaining the main concept clearly. Use an analogy from the ${world} world. Break it down simply.",
-      "keyPoints": ["Key concept 1", "Key concept 2", "Key concept 3"],
-      "animation": { "character": { "bobAmplitude": 10, "duration": 3, "rotateDegrees": 4 }, "particles": { "count": 8, "sizeRange": [4,10], "duration": 3 } }
+      "narration": "3-4 sentences giving the real, accurate explanation step by step, using a simple everyday comparison.",
+      "keyPoints": ["Key concept 1", "Key concept 2", "Key concept 3"]
     },
     {
       "id": 3,
-      "title": "Scene 3 title",
+      "title": "Scene 3 title — the recap",
       "visualType": "summary",
-      "narration": "2-3 sentences summarising what was learned. ${characterName} celebrates understanding. Preview the quiz.",
-      "keyPoints": ["Summary point 1", "Summary point 2", "Summary point 3"],
-      "animation": { "character": { "bobAmplitude": 8, "duration": 2.8, "rotateDegrees": 2 }, "particles": { "count": 5, "sizeRange": [4,7], "duration": 2.2 } }
+      "narration": "2-3 sentences summarising the facts learned, in plain direct language. Preview the quiz.",
+      "keyPoints": ["Summary point 1", "Summary point 2", "Summary point 3"]
     }
   ]
 }`;

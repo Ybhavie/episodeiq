@@ -3,12 +3,12 @@ import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "EpisodeIQ — Every confused kid deserves their own episode",
-  description: "AI-powered personalised animated video lessons for kids aged 9–12. Learn anything through your own story universe.",
-  keywords: ["kids learning", "AI education", "animated lessons", "personalised learning"],
+  title: "EpisodeIQ — Every confused kid deserves a real answer",
+  description: "AI-powered personalised lessons for kids aged 9–12. Ask any question and get a clear, real explanation with visuals and a quiz — in their own language.",
+  keywords: ["kids learning", "AI education", "personalised learning", "homework help"],
   openGraph: {
     title: "EpisodeIQ",
-    description: "Every confused kid deserves their own episode",
+    description: "Every confused kid deserves a real answer",
     type: "website",
   },
 };
