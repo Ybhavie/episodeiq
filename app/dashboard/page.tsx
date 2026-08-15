@@ -428,7 +428,7 @@ export default function DashboardPage() {
             { time: "Today 4:12 PM", action: "Episode generated for Arjun", detail: "Why does the Moon have craters? · Wizard Academy · 3 scenes illustrated", color: "#7F77DD" },
             { time: "Today 2:30 PM", action: "Quiz completed", detail: "Solar System · Score: 2/3 · Re-explanation generated", color: "#4ECDC4" },
             { time: "Yesterday", action: "Groq script written", detail: "French Revolution · 3 scenes · Wizard Academy theme", color: "#1D9E75" },
-            { time: "Yesterday", action: "Gemini scene art generated", detail: "3 illustrations · no text-reading required", color: "#D97706" },
+            { time: "Yesterday", action: "Scenes animated", detail: "3 scenes · narrated aloud · no text-reading required", color: "#D97706" },
             { time: "Mon 8:00 AM", action: "Weekly parent report", detail: "5 topics covered · avg score 87%", color: "#FF6B6B" },
           ].map((log, i) => (
             <div key={i} className="flex items-start gap-3 py-3"

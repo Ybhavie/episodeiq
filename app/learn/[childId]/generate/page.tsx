@@ -27,7 +27,6 @@ interface Scene {
   narration: string;
   keyPoints: string[];
   visualType: "intro" | "explanation" | "summary";
-  imageUrl?: string | null;
 }
 
 // Generation steps shown to user
@@ -35,7 +34,7 @@ const generationSteps = [
   { icon: Brain, label: "Understanding your question...", color: "#7F77DD" },
   { icon: Zap, label: "Checking for similar episodes...", color: "#4ECDC4" },
   { icon: FileText, label: "Writing your episode script...", color: "#1D9E75" },
-  { icon: BookOpen, label: "Painting your scenes with Gemini...", color: "#D97706" },
+  { icon: BookOpen, label: "Animating your scenes...", color: "#D97706" },
   { icon: CheckCircle, label: "Episode ready!", color: "#1D9E75" },
 ];
 
@@ -173,7 +172,7 @@ function GeneratingAnimation({
       </div>
 
       <p className="text-xs mt-6 text-center" style={{ color: "#A89FE8" }}>
-        Powered by Gemini · Usually takes 20–30 seconds
+        Powered by Gemini · Usually takes 5–10 seconds
       </p>
     </div>
   );

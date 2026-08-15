@@ -40,7 +40,6 @@ interface Scene {
   narration: string;
   keyPoints: string[];
   visualType: "intro" | "explanation" | "summary";
-  imageUrl?: string | null;
 }
 
 interface Episode {
@@ -317,47 +316,32 @@ export default function EpisodePlayerPage() {
                   </button>
                 </div>
 
-                {currentScene.imageUrl ? (
-                  <div className="rounded-2xl overflow-hidden mb-4"
-                    style={{ aspectRatio: "4 / 3", backgroundColor: "#F0EEFF" }}>
-                    <motion.img
-                      key={currentScene.imageUrl}
-                      src={currentScene.imageUrl}
-                      alt={currentScene.title}
-                      className="w-full h-full object-cover"
-                      initial={{ scale: 1.08 }}
-                      animate={{ scale: 1 }}
-                      transition={{ duration: 8, ease: "easeOut" }}
-                    />
-                  </div>
-                ) : (
-                  <div className="rounded-2xl overflow-hidden mb-4 relative flex items-center justify-center"
-                    style={{ aspectRatio: "4 / 3", background: gradient }}>
-                    {[...Array(6)].map((_, i) => (
-                      <motion.div
-                        key={i}
-                        className="absolute rounded-full"
-                        style={{
-                          width: `${4 + (i % 3) * 3}px`,
-                          height: `${4 + (i % 3) * 3}px`,
-                          backgroundColor: "rgba(255,255,255,0.4)",
-                          top: `${15 + i * 12}%`,
-                          left: `${8 + i * 15}%`,
-                        }}
-                        animate={{ y: [0, -10, 0], opacity: [0.3, 0.8, 0.3] }}
-                        transition={{ duration: 2.5 + i * 0.3, repeat: Infinity, delay: i * 0.25 }}
-                      />
-                    ))}
+                <div className="rounded-2xl overflow-hidden mb-4 relative flex items-center justify-center"
+                  style={{ aspectRatio: "4 / 3", background: gradient }}>
+                  {[...Array(6)].map((_, i) => (
                     <motion.div
-                      key={`${sceneIndex}-character`}
-                      animate={{ y: [0, -12, 0], rotate: [-3, 3, -3] }}
-                      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                      className="relative z-10"
-                    >
-                      <WorldCharacter world={child?.world ?? "Wizard Academy"} size={110} />
-                    </motion.div>
-                  </div>
-                )}
+                      key={i}
+                      className="absolute rounded-full"
+                      style={{
+                        width: `${4 + (i % 3) * 3}px`,
+                        height: `${4 + (i % 3) * 3}px`,
+                        backgroundColor: "rgba(255,255,255,0.4)",
+                        top: `${15 + i * 12}%`,
+                        left: `${8 + i * 15}%`,
+                      }}
+                      animate={{ y: [0, -10, 0], opacity: [0.3, 0.8, 0.3] }}
+                      transition={{ duration: 2.5 + i * 0.3, repeat: Infinity, delay: i * 0.25 }}
+                    />
+                  ))}
+                  <motion.div
+                    key={`${sceneIndex}-character`}
+                    animate={{ y: [0, -12, 0], rotate: [-3, 3, -3] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                    className="relative z-10"
+                  >
+                    <WorldCharacter world={child?.world ?? "Wizard Academy"} size={110} />
+                  </motion.div>
+                </div>
 
                 <h2 className="text-xl font-black mb-3" style={{ color: "#1A1744" }}>
                   {currentScene.title}
