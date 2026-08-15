@@ -66,6 +66,7 @@ interface Scene {
   keyPoints: string[];
   visualType: "intro" | "explanation" | "summary";
   icon?: string;
+  imageUrl?: string;
 }
 
 interface Episode {
@@ -93,6 +94,8 @@ export default function EpisodePlayerPage() {
   const [child, setChild] = useState<Child | null>(null);
   const [episode, setEpisode] = useState<Episode | null>(null);
   const [sceneIndex, setSceneIndex] = useState(0);
+  const [imageFailed, setImageFailed] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
@@ -131,6 +134,11 @@ export default function EpisodePlayerPage() {
   useEffect(() => {
     load();
   }, [load]);
+
+  useEffect(() => {
+    setImageFailed(false);
+    setImageLoaded(false);
+  }, [sceneIndex]);
 
   const gradient = worldGradients[child?.world ?? ""] ?? worldGradients["Wizard Academy"];
   const scenes = episode?.scenes ?? [];
@@ -342,8 +350,9 @@ export default function EpisodePlayerPage() {
                   </button>
                 </div>
 
-                <div className="rounded-2xl mb-4 flex items-center justify-center"
+                <div className="rounded-2xl mb-4 overflow-hidden relative flex items-center justify-center"
                   style={{ aspectRatio: "4 / 3", background: gradient }}>
+                  {/* Icon placeholder — always present, doubles as the loading state */}
                   <div className="w-20 h-20 rounded-3xl flex items-center justify-center"
                     style={{ backgroundColor: "rgba(255,255,255,0.15)" }}>
                     {(() => {
@@ -354,6 +363,19 @@ export default function EpisodePlayerPage() {
                       return <Icon size={40} className="text-white" />;
                     })()}
                   </div>
+
+                  {/* Real picture fades in on top once it's ready */}
+                  {currentScene.imageUrl && !imageFailed && (
+                    <img
+                      key={currentScene.imageUrl}
+                      src={currentScene.imageUrl}
+                      alt={currentScene.title}
+                      className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
+                      style={{ opacity: imageLoaded ? 1 : 0 }}
+                      onLoad={() => setImageLoaded(true)}
+                      onError={() => setImageFailed(true)}
+                    />
+                  )}
                 </div>
 
                 <h2 className="text-xl font-black mb-3" style={{ color: "#1A1744" }}>

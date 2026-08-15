@@ -15,6 +15,19 @@ const ICON_NAMES = [
   "Map", "Clock", "Car", "Plane", "Umbrella", "Coffee", "BookOpen", "Sparkles",
 ].join(", ");
 
+interface Scene {
+  narration: string;
+  visualType?: string;
+}
+
+// Free, no-API-key image generation — the URL itself triggers generation on
+// request, so this adds zero latency to episode creation.
+function buildSceneImageUrl(scene: Scene, world: string, characterName: string, topic: string) {
+  const prompt = `flat vector cartoon illustration, children's educational book style, bright cheerful colors, simple clean shapes, no text or letters or words anywhere in the image, ${world} theme, main character ${characterName}, depicting: ${scene.narration || topic}`;
+  const seed = Math.floor(Math.random() * 1_000_000);
+  return `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=800&height=600&seed=${seed}&nologo=true&model=flux`;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { topic, childId, world, characterName, language, childName, board, grade } =
@@ -125,6 +138,10 @@ Return ONLY valid JSON in this exact format, no other text:
     }
 
     scriptJson.language = language ?? "English";
+    scriptJson.scenes = (scriptJson.scenes ?? []).map((scene: Scene) => ({
+      ...scene,
+      imageUrl: buildSceneImageUrl(scene, world, characterName, topic),
+    }));
 
     // Save episode to Supabase
     const { data: episode, error: dbError } = await supabaseAdmin
